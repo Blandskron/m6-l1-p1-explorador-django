@@ -1,0 +1,23 @@
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Sincronizar el código fuente para permitir recarga en vivo (hot-reload)
+      - .:/app
+      # Usar un volumen dedicado para SQLite para evitar bloqueos de archivos en Windows
+      - sqlite_data:/data
+    environment:
+      # Ubicación de la base de datos dentro del volumen interno
+      - DJANGO_DATABASE_PATH=/data/db.sqlite3
+      # Configuración del superusuario automático
+      - DJANGO_SUPERUSER_USERNAME=admin
+      - DJANGO_SUPERUSER_PASSWORD=adminpass123
+      - DJANGO_SUPERUSER_EMAIL=admin@example.com
+      # Activar logs de python sin buffering
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
+volumes:
+  sqlite_data:

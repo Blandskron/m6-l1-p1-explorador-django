@@ -1,288 +1,168 @@
-# Aplicación 1 — Explorador de arquitectura y flujo de Django
+# Explorador de Arquitectura y Flujo de Django
 
-Proyecto didáctico **mínimo** para observar cómo funciona Django internamente desde que llega una URL hasta que se renderiza un template.
-
----
-
-## Requisitos previos
-
-- Python 3.10+ instalado
-- Terminal (PowerShell/CMD en Windows, o terminal en Linux/macOS)
-
-Verifica tu instalación:
-
-```bash
-python --version
-pip --version
-````
-
-> En Linux/macOS puede ser `python3` en vez de `python`.
+Proyecto didáctico **mínimo** para observar de manera práctica y visual cómo funciona Django internamente desde que llega una URL (HTTP Request) hasta que se renderiza un template y se genera el HTML de respuesta (HTTP Response).
 
 ---
 
-## 1) Crear carpeta del proyecto y entrar
+## 📂 Estructura del Proyecto
 
-```bash
-mkdir explorador_django
-cd explorador_django
-```
+Este proyecto está organizado bajo una arquitectura monolítica clásica:
+
+* `explorador_django/`: Directorio raíz del proyecto Django (configuraciones, enrutador global `urls.py`, `settings.py`).
+* `arquitectura/`: Aplicación modular de Django que maneja el enrutamiento interno, vistas (`views.py`), modelos (`models.py`) y pruebas (`tests.py`).
+* `templates/`: Plantillas HTML organizadas con herencia de componentes (`base.html` y plantillas de vista).
+* `Dockerfile` & `docker-compose.yml`: Configuración de dockerización para automatizar el desarrollo.
+* `introduccion_django.md`: Guía de estudio teórica sobre conceptos clave de Django, arquitectura MTV y entornos virtuales.
+* `docker_guide.md`: Guía didáctica específica sobre el uso y configuración de Docker para estudiantes.
 
 ---
 
-## 2) Crear y activar entorno virtual (venv)
+## ⚡ Opción A: Ejecución Rápida con Docker (Recomendado)
 
-### Windows (PowerShell)
+La vía más rápida e independiente del sistema operativo. No requiere instalar Python o Django en tu máquina real, solo tener instalado [Docker Desktop](https://www.docker.com/products/docker-desktop/).
 
+### 1. Iniciar el contenedor
+Abre la terminal en la carpeta raíz del proyecto y ejecuta:
 ```bash
-python -m venv venv
-.\venv\Scripts\Activate.ps1
+docker compose up --build
 ```
+*Este comando compilará la imagen de Python, instalará las librerías, aplicará las migraciones y configurará un superusuario administrador automáticamente.*
 
-Si PowerShell bloquea la activación por políticas, ejecuta (una vez) como administrador:
+### 2. Acceder a la aplicación
+* **Sitio Web:** [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+* **Panel de Administración:** [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
+  * **Usuario:** `admin`
+  * **Contraseña:** `adminpass123`
 
+### 3. Detener la ejecución
+Para detener los contenedores y liberar los puertos, presiona `CTRL + C` en tu terminal, o ejecuta:
 ```bash
-Set-ExecutionPolicy RemoteSigned
-```
-
-Luego vuelve a activar:
-
-```bash
-.\venv\Scripts\Activate.ps1
-```
-
-### Windows (CMD)
-
-```bash
-python -m venv venv
-venv\Scripts\activate.bat
-```
-
-### Linux / macOS
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-Verifica que estás dentro del entorno virtual:
-
-```bash
-python -c "import sys; print(sys.executable)"
+docker compose down
 ```
 
 ---
 
-## 3) Instalar Django
+## 🛠️ Opción B: Ejecución en Entorno Local (Tradicional)
 
-Actualiza pip e instala Django:
+Si prefieres ejecutar el proyecto utilizando un entorno virtual local (`venv`):
 
+### Requisitos previos
+* Python 3.10 o superior instalado.
+* Gestor de paquetes `pip` actualizado.
+
+### Paso 1: Crear y activar el entorno virtual
+En la raíz del proyecto, ejecuta:
+
+* **Windows (PowerShell):**
+  ```powershell
+  python -m venv venv
+  .\venv\Scripts\Activate.ps1
+  ```
+* **Windows (CMD):**
+  ```cmd
+  python -m venv venv
+  venv\Scripts\activate.bat
+  ```
+* **Linux / macOS:**
+  ```bash
+  python3 -m venv venv
+  source venv/bin/activate
+  ```
+
+### Paso 2: Instalar dependencias
 ```bash
-python -m pip install --upgrade pip
-pip install django
+pip install -r requirements.txt
 ```
 
-Verifica versión de Django:
-
-```bash
-python -m django --version
-```
-
----
-
-## 4) Crear el proyecto Django
-
-Dentro de la carpeta `explorador_django/` (la que creaste con `mkdir`), ejecuta:
-
-```bash
-django-admin startproject explorador_django .
-```
-
-> El punto `.` es importante: crea el proyecto **en la carpeta actual**.
-
-Comprueba que existe `manage.py`:
-
-```bash
-dir
-```
-
-En Linux/macOS:
-
-```bash
-ls
-```
-
-Deberías ver `manage.py` y la carpeta `explorador_django/`.
-
----
-
-## 5) Crear la aplicación
-
-Crea la app del curso:
-
-```bash
-python manage.py startapp arquitectura
-```
-
----
-
-## 6) Primera migración (tablas base de Django)
-
-Ejecuta migraciones iniciales:
-
+### Paso 3: Aplicar migraciones iniciales
 ```bash
 python manage.py migrate
 ```
 
----
-
-## 7) Editar archivos del proyecto (los que “tocamos”)
-
-Ahora debes **modificar/crear** los siguientes archivos (según lo que ya te entregué antes):
-
-* `explorador_django/settings.py` (agregar `arquitectura` y templates DIRS)
-* `explorador_django/urls.py` (incluir rutas de la app)
-* `arquitectura/urls.py` (crear archivo)
-* `arquitectura/views.py` (editar)
-* `arquitectura/models.py` (editar, modelo `Nota`)
-* `templates/base.html` (crear)
-* `templates/arquitectura/home.html` (crear)
-* `templates/arquitectura/flujo.html` (crear)
-* `templates/arquitectura/mvc.html` (crear)
-
----
-
-## 8) Crear carpetas de templates
-
-Crea estas carpetas:
-
-### Windows (PowerShell / CMD)
-
-```bash
-mkdir templates
-mkdir templates\arquitectura
-```
-
-### Linux / macOS
-
-```bash
-mkdir -p templates/arquitectura
-```
-
----
-
-## 9) Crear migraciones de tu modelo (Nota)
-
-Después de editar `arquitectura/models.py` con el modelo `Nota`, ejecuta:
-
-```bash
-python manage.py makemigrations arquitectura
-```
-
-Luego aplica:
-
-```bash
-python manage.py migrate
-```
-
----
-
-## 10) (Opcional) Crear superusuario para entrar al admin
-
-Si vas a usar `/admin`:
-
+### Paso 4: Crear superusuario (Opcional)
+Para acceder al panel de administración `/admin/` localmente:
 ```bash
 python manage.py createsuperuser
 ```
+*(Ingresa el usuario, correo electrónico y contraseña que prefieras).*
 
-Te pedirá:
-
-* usuario
-* email (opcional)
-* contraseña
-
----
-
-## 11) Levantar el servidor
-
+### Paso 5: Levantar el servidor de desarrollo
 ```bash
 python manage.py runserver
 ```
-
-Abre en el navegador:
-
-* `http://127.0.0.1:8000/` → Inicio
-* `http://127.0.0.1:8000/flujo/` → Flujo URL → View → Template
-* `http://127.0.0.1:8000/mvc/` → MTV mínimo (Model/Template/View)
-* `http://127.0.0.1:8000/admin/` → Admin (si creaste superusuario)
-
-Para detener el servidor:
-
-* `CTRL + C`
+* Abre tu navegador en [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
+* Para apagar el servidor local, presiona `CTRL + C`.
+* Para desactivar el entorno virtual, escribe `deactivate`.
 
 ---
 
-## 12) (Opcional) Guardar dependencias del proyecto
+## 🧪 Pruebas Unitarias Automatizadas
 
-Para dejar el proyecto reproducible:
+El proyecto incluye pruebas automatizadas para validar el correcto funcionamiento de las URLs y la visualización de datos:
 
-```bash
-pip freeze > requirements.txt
-```
-
----
-
-## 13) Salir del entorno virtual
-
-```bash
-deactivate
-```
+* **Ejecutar pruebas localmente:**
+  ```bash
+  python manage.py test
+  ```
+* **Ejecutar pruebas dentro de Docker:**
+  ```bash
+  docker compose exec web python manage.py test
+  ```
 
 ---
 
-## Checklist rápido (para la clase)
+## 📝 Taller Práctico: Construcción del Proyecto desde Cero
 
-```bash
-mkdir explorador_django
-cd explorador_django
-python -m venv venv
-# activar venv según SO
-pip install django
-django-admin startproject explorador_django .
-python manage.py startapp arquitectura
-python manage.py migrate
-# editar/crear archivos del proyecto
-python manage.py makemigrations arquitectura
-python manage.py migrate
-python manage.py runserver
-```
+Si deseas replicar este proyecto paso a paso en clase con tus estudiantes para enseñar la fase de inicialización, sigue esta guía:
+
+1. **Crear carpeta del proyecto y entrar:**
+   ```bash
+   mkdir explorador_django
+   cd explorador_django
+   ```
+2. **Crear y activar el entorno virtual (`venv`):**
+   *(Ver los comandos de activación según el sistema operativo en la Sección Opción B).*
+3. **Instalar Django:**
+   ```bash
+   pip install django
+   ```
+4. **Inicializar el proyecto Django:**
+   ```bash
+   django-admin startproject explorador_django .
+   ```
+   *(El punto `.` al final es crucial para crear el proyecto en el directorio actual).*
+5. **Crear la aplicación modular:**
+   ```bash
+   python manage.py startapp arquitectura
+   ```
+6. **Registrar la aplicación y configurar plantillas:**
+   * En `explorador_django/settings.py`, agrega `'arquitectura'` en `INSTALLED_APPS`.
+   * En la misma sección `settings.py`, configura `'DIRS': [BASE_DIR / 'templates']` dentro de la lista `TEMPLATES`.
+7. **Configurar el enrutador global y local:**
+   * En `explorador_django/urls.py`, incluye las URLs de la aplicación usando `include("arquitectura.urls")`.
+   * Crea el archivo `arquitectura/urls.py` y define las rutas (`home`, `flujo`, `mvc`) mapeándolas a `views.py`.
+8. **Crear carpetas de templates:**
+   * Crea un directorio `templates/` en la raíz.
+   * Crea un subdirectorio `templates/arquitectura/` para organizar los templates de la app.
+9. **Implementar Vistas, Modelos y Plantillas:**
+   * Desarrolla la clase del modelo en `models.py`.
+   * Genera y aplica los archivos de migración:
+     ```bash
+     python manage.py makemigrations arquitectura
+     python manage.py migrate
+     ```
+   * Registra el modelo en `admin.py` para habilitar su edición desde el panel.
+   * Define la lógica de respuesta en `views.py` e implementa los templates HTML correspondientes.
 
 ---
 
-## Solución rápida de errores comunes
+## 📚 Documentación Complementaria de Estudio
 
-### `python` no encontrado / versión incorrecta
+* 📖 **Guía Teórica de Django y MTV:** Consulta [introduccion_django.md](file:///c:/Users/BlandskronNotebook/Documents/updatesGitHubs/Django/M6/M6-L1-D1-ExploradorDjango/introduccion_django.md) para estudiar a fondo el ciclo Request-Response, el patrón MTV, el principio DRY y el manejo de entornos virtuales.
+* 🐳 **Guía Didáctica de Docker:** Consulta [docker_guide.md](file:///c:/Users/BlandskronNotebook/Documents/updatesGitHubs/Django/M6/M6-L1-D1-ExploradorDjango/docker_guide.md) para aprender detalladamente cómo Docker encapsula y automatiza la ejecución del servidor de Django.
 
-* En Linux/macOS usa `python3`.
-* Asegúrate de tener Python agregado al PATH.
+---
 
-### No se activó el entorno virtual
+## 📄 Licencia
 
-Verifica el ejecutable:
-
-```bash
-python -c "import sys; print(sys.executable)"
-```
-
-### “No module named django”
-
-Instala Django dentro del venv:
-
-```bash
-pip install django
-```
-
-### Cambios en templates no se ven
-
-* Revisa que exista `templates/`
-* Revisa que `settings.py` tenga `DIRS: [BASE_DIR / "templates"]`
-* Reinicia el servidor con `CTRL + C` y `python manage.py runserver`
+Este proyecto está bajo la **Licencia MIT**. Siéntete libre de utilizarlo, modificarlo y distribuirlo de forma gratuita en tus lecciones y cursos. Consulta el archivo [LICENSE](file:///c:/Users/BlandskronNotebook/Documents/updatesGitHubs/Django/M6/M6-L1-D1-ExploradorDjango/LICENSE) para más detalles.

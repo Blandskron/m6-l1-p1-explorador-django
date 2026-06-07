@@ -1,0 +1,39 @@
+# Git
+.git
+.gitignore
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Base de datos local
+db.sqlite3
+db.sqlite3-journal
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# IDEs y editores
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Antigravity / Gemini
+.gemini/
+brain/
+scratch/
+evaluacion_proyecto.md
+implementation_plan.md
+task.md
+walkthrough.md
