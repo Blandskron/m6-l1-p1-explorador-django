@@ -6,7 +6,7 @@ class ArquitecturaTests(TestCase):
     def test_home_page_status_code(self):
         response = self.client.get(reverse("arquitectura:home"))
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Explorador de arquitectura Django")
+        self.assertContains(response, "Explorador Django")
 
     def test_flujo_page_status_code(self):
         response = self.client.get(reverse("arquitectura:flujo"))
